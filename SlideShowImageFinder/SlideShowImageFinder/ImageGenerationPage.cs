@@ -530,6 +530,7 @@ namespace SlideShowImageFinder
 
             pptxDoc.Save("Sample.pptx");
             pptxDoc.Close();
+            MessageBox.Show("PowerPoint has been created!", "PowerPoint Created", MessageBoxButtons.OK);
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
