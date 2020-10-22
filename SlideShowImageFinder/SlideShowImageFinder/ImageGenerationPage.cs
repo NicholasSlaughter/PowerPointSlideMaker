@@ -30,6 +30,7 @@ namespace SlideShowImageFinder
         private int img1SaveIndex {get;set;}
         private int img2SaveIndex { get; set; }
         private int img3SaveIndex { get; set; }
+        private ArrayList imageToPptIndex { get; set; }
 
 
         public ImageGenerationPage(string search, string title, string text)
@@ -46,6 +47,7 @@ namespace SlideShowImageFinder
             img2SaveIndex = 0;
             img3SaveIndex = 0;
             index = 0;
+            imageToPptIndex = new ArrayList();
 
             //The Url the program is going to go to and search
             //using searchscene.com because it was the first search engine I could find that let me take image urls from it
@@ -311,7 +313,7 @@ namespace SlideShowImageFinder
         //If yes then a file explorer will pop up asking where to store the image
         //The image will then be saved as a jpeg when the file location has been chosen
         //If you do not want to save then the message box will close
-        private void pictureBox2_Click(object sender, EventArgs e)
+        private void pictureBox2_DoubleClick(object sender, EventArgs e)
         {
             string message = "Do you want to save the selected image?";
             string title = "Save Image";
@@ -391,7 +393,7 @@ namespace SlideShowImageFinder
         //If yes then a file explorer will pop up asking where to store the image
         //The image will then be saved as a jpeg when the file location has been chosen
         //If you do not want to save then the message box will close
-        private void pictureBox1_Click(object sender, EventArgs e)
+        private void pictureBox1_DoubleClick(object sender, EventArgs e)
         {
             string message = "Do you want to save the selected image?";
             string title = "Save Image";
@@ -481,7 +483,107 @@ namespace SlideShowImageFinder
             IShape descriptionShape = slide.Shapes[1] as IShape;
             descriptionShape.TextBody.AddParagraph(pptText);
 
+            if(imageToPptIndex.Count != 0)
+            {
+                HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+
+                document = new HtmlWeb().Load(requestUrl);
+
+                var links = document.DocumentNode.Descendants("img")
+                                    .Select(a => a.GetAttributeValue("src", null))
+                                    .Where(s => !String.IsNullOrEmpty(s));
+
+                var urls = links.ToList();
+
+                urls.RemoveAt(0);
+                double imageOffset = 499.79;
+
+                using (WebClient webClient = new WebClient())
+                {
+                    for (int i = 0; i < imageToPptIndex.Count; i++)
+                    {
+                        string imageUrl = urls[(int)imageToPptIndex[i]];
+
+                        byte[] imageBytes;
+                        HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create(imageUrl);
+                        WebResponse imageResponse = imageRequest.GetResponse();
+
+                        Stream responseStream = imageResponse.GetResponseStream();
+
+                        using (BinaryReader br = new BinaryReader(responseStream))
+                        {
+                            imageBytes = br.ReadBytes(500000);
+                            br.Close();
+                        }
+                        responseStream.Close();
+                        imageResponse.Close();
+
+                        //Gets a picture as stream.
+                        MemoryStream stream = new MemoryStream(imageBytes);
+
+                        //Adds the picture to a slide by specifying its size and position.
+                        slide.Shapes.AddPicture(stream, imageOffset + i*10, 238.59, 364.54, 192.16);
+                        stream.Close();
+                    }
+                }
+            }
+
             pptxDoc.Save("Sample.pptx");
+            pptxDoc.Close();
+        }
+
+        private void pictureBox3_Click(object sender, EventArgs e)
+        {
+            //Message box initialization
+            string message = "Do you want to put the selected image in the PowerPoint?";
+            string title = "Copy Image";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+
+            if (result==DialogResult.Yes)
+            {
+                imageToPptIndex.Add(img3SaveIndex); //adds the image index in picture box 3 an array of images to copy to the PowerPoint
+            }
+            else
+            {
+                //close
+            }
+        }
+
+        private void pictureBox2_Click(object sender, EventArgs e)
+        {
+            //Message box initialization
+            string message = "Do you want to put the selected image in the PowerPoint?";
+            string title = "Copy Image";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+
+            if (result == DialogResult.Yes)
+            {
+                imageToPptIndex.Add(img2SaveIndex); //adds the image index in picture box 2 an array of images to copy to the PowerPoint
+            }
+            else
+            {
+                //close
+            }
+        }
+
+        private void pictureBox1_Click(object sender, EventArgs e)
+        {
+            //Message box initialization
+            string message = "Do you want to put the selected image in the PowerPoint?";
+            string title = "Copy Image";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+
+            if (result == DialogResult.Yes)
+            {
+                imageToPptIndex.Add(img1SaveIndex); //adds the image index in picture box 1 an array of images to copy to the PowerPoint
+            }
+            else
+            {
+                //close
+            }
         }
     }
 }
