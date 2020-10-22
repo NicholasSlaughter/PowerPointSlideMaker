@@ -34,6 +34,7 @@
             this.generateButton = new System.Windows.Forms.Button();
             this.appTitle = new System.Windows.Forms.Label();
             this.richTextBoxText = new System.Windows.Forms.RichTextBox();
+            this.checkBox1 = new System.Windows.Forms.CheckBox();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -95,11 +96,24 @@
             this.richTextBoxText.TabIndex = 6;
             this.richTextBoxText.Text = "";
             // 
+            // checkBox1
+            // 
+            this.checkBox1.AutoSize = true;
+            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.checkBox1.Location = new System.Drawing.Point(600, 388);
+            this.checkBox1.Name = "checkBox1";
+            this.checkBox1.Size = new System.Drawing.Size(120, 50);
+            this.checkBox1.TabIndex = 7;
+            this.checkBox1.Text = "Bold";
+            this.checkBox1.UseVisualStyleBackColor = true;
+            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            // 
             // textTextbox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.checkBox1);
             this.Controls.Add(this.richTextBoxText);
             this.Controls.Add(this.appTitle);
             this.Controls.Add(this.generateButton);
@@ -122,6 +136,7 @@
         private System.Windows.Forms.Button generateButton;
         private System.Windows.Forms.Label appTitle;
         private System.Windows.Forms.RichTextBox richTextBoxText;
+        private System.Windows.Forms.CheckBox checkBox1;
     }
 }
 

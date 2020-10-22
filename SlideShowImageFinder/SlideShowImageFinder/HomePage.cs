@@ -86,5 +86,20 @@ namespace SlideShowImageFinder
             igp.Show(); //shows the image generation page
 
         }
+
+        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        {
+            richTextBoxText.SwtichToBoldRegular();
+        }
+    }
+    static class Helper
+    {
+        public static void SwtichToBoldRegular(this RichTextBox c)
+        {
+            if (c.SelectionFont.Style != FontStyle.Bold)
+                c.SelectionFont = new Font(c.Font.FontFamily, c.Font.Size, FontStyle.Bold);
+            else
+                c.SelectionFont = new Font(c.Font.FontFamily, c.Font.Size, FontStyle.Regular);
+        }
     }
 }
