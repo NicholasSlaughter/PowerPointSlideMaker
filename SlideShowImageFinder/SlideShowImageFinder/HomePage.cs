@@ -25,6 +25,7 @@ namespace SlideShowImageFinder
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            boldOnLabel.Visible = false;
         }
 
         //This button takes in the title and the text of a users slide show
@@ -92,10 +93,18 @@ namespace SlideShowImageFinder
             igp.Show(); //shows the image generation page
 
         }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void boldButton_Click(object sender, EventArgs e)
         {
-            richTextBoxText.SwtichToBoldRegular();
+            if (!boldOnLabel.Visible)
+            {
+                richTextBoxText.SwtichToBoldRegular();
+                boldOnLabel.Visible = true;
+            }
+            else
+            {
+                richTextBoxText.SwtichToBoldRegular();
+                boldOnLabel.Visible = false;
+            }
         }
     }
     static class Helper

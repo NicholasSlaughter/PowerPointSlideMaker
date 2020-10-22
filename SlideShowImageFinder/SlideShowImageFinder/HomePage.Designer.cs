@@ -34,7 +34,8 @@
             this.generateButton = new System.Windows.Forms.Button();
             this.appTitle = new System.Windows.Forms.Label();
             this.richTextBoxText = new System.Windows.Forms.RichTextBox();
-            this.checkBox1 = new System.Windows.Forms.CheckBox();
+            this.boldButton = new System.Windows.Forms.Button();
+            this.boldOnLabel = new System.Windows.Forms.Label();
             this.SuspendLayout();
             // 
             // titleLabel
@@ -90,30 +91,41 @@
             // 
             // richTextBoxText
             // 
+            this.richTextBoxText.Font = new System.Drawing.Font("Microsoft Sans Serif", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.richTextBoxText.Location = new System.Drawing.Point(323, 152);
             this.richTextBoxText.Name = "richTextBoxText";
             this.richTextBoxText.Size = new System.Drawing.Size(397, 214);
             this.richTextBoxText.TabIndex = 6;
             this.richTextBoxText.Text = "";
             // 
-            // checkBox1
+            // boldButton
             // 
-            this.checkBox1.AutoSize = true;
-            this.checkBox1.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.checkBox1.Location = new System.Drawing.Point(600, 388);
-            this.checkBox1.Name = "checkBox1";
-            this.checkBox1.Size = new System.Drawing.Size(120, 50);
-            this.checkBox1.TabIndex = 7;
-            this.checkBox1.Text = "Bold";
-            this.checkBox1.UseVisualStyleBackColor = true;
-            this.checkBox1.CheckedChanged += new System.EventHandler(this.checkBox1_CheckedChanged);
+            this.boldButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 15F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.boldButton.Location = new System.Drawing.Point(515, 385);
+            this.boldButton.Name = "boldButton";
+            this.boldButton.Size = new System.Drawing.Size(118, 53);
+            this.boldButton.TabIndex = 8;
+            this.boldButton.Text = "Bold";
+            this.boldButton.UseVisualStyleBackColor = true;
+            this.boldButton.Click += new System.EventHandler(this.boldButton_Click);
+            // 
+            // boldOnLabel
+            // 
+            this.boldOnLabel.AutoSize = true;
+            this.boldOnLabel.Font = new System.Drawing.Font("Microsoft Sans Serif", 10F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.boldOnLabel.Location = new System.Drawing.Point(656, 406);
+            this.boldOnLabel.Name = "boldOnLabel";
+            this.boldOnLabel.Size = new System.Drawing.Size(59, 17);
+            this.boldOnLabel.TabIndex = 9;
+            this.boldOnLabel.Text = "Bold On";
             // 
             // textTextbox
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
-            this.Controls.Add(this.checkBox1);
+            this.Controls.Add(this.boldOnLabel);
+            this.Controls.Add(this.boldButton);
             this.Controls.Add(this.richTextBoxText);
             this.Controls.Add(this.appTitle);
             this.Controls.Add(this.generateButton);
@@ -136,7 +148,8 @@
         private System.Windows.Forms.Button generateButton;
         private System.Windows.Forms.Label appTitle;
         private System.Windows.Forms.RichTextBox richTextBoxText;
-        private System.Windows.Forms.CheckBox checkBox1;
+        private System.Windows.Forms.Button boldButton;
+        private System.Windows.Forms.Label boldOnLabel;
     }
 }
 
