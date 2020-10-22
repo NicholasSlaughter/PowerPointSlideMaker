@@ -62,15 +62,20 @@ namespace SlideShowImageFinder
                 else //if the char is bold and the boldFinder string isn't empty then add the next bold character to the string
                 {
                     boldFinder += richTextBoxText.Text[i].ToString();
-                    if (richTextBoxText.Text[i + 1].ToString() == " ") //If the next character is a space then add a space to the boldFinder string and skip the next sequence
+                    
+                    //Make sure an out of bound exception is not thrown
+                    if (richTextBoxText.Text.Length != i+1)
                     {
-                        i++;
-                        boldFinder += " ";
-                    }
-                    else if(richTextBoxText.Text[i + 1].ToString() == "\n") //If the next character is a newline then add a space to the boldFinder string and skip the next sequence
-                    {
-                        i++;
-                        boldFinder += " ";
+                        if (richTextBoxText.Text[i + 1].ToString() == " ") //If the next character is a space then add a space to the boldFinder string and skip the next sequence
+                        {
+                            i++;
+                            boldFinder += " ";
+                        }
+                        else if (richTextBoxText.Text[i + 1].ToString() == "\n") //If the next character is a newline then add a space to the boldFinder string and skip the next sequence
+                        {
+                            i++;
+                            boldFinder += " ";
+                        }
                     }
                 }
             }
