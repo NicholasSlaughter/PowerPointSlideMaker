@@ -76,7 +76,7 @@ namespace SlideShowImageFinder
             }
             
             boldTextInput = boldFinder;
-            string fullInput = titleInput + " " + textInput; //Sets the full input given from the user into a string
+            string fullInput = titleInput + " " + boldTextInput; //Sets the full input given from the user into a string
 
             //parce through the full input and find space. if there is a space the replace with %20
             //%20 is used becuase the website url reads spaces as %20 for the image search
