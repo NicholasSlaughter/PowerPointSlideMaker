@@ -34,7 +34,8 @@ namespace SlideShowImageFinder
         private void generateButton_Click(object sender, EventArgs e)
         {
             string titleInput = titleTextBox.Text.ToString(); //Set the title to a string
-            string textInput;
+            string textInput = richTextBoxText.Text.ToString();
+            string boldTextInput;
             string boldFinder = "a";
             int counter = 0;
 
@@ -74,7 +75,7 @@ namespace SlideShowImageFinder
                 }
             }
             
-            textInput = boldFinder;
+            boldTextInput = boldFinder;
             string fullInput = titleInput + " " + textInput; //Sets the full input given from the user into a string
 
             //parce through the full input and find space. if there is a space the replace with %20
@@ -82,7 +83,7 @@ namespace SlideShowImageFinder
             string search = Regex.Replace(fullInput, @"\s+", "%20");
             string fullUrlExtension = search; //sets the full url extension to a string
 
-            ImageGenerationPage igp = new ImageGenerationPage(fullUrlExtension); //intializes the image generation page by providing the proper url extension
+            ImageGenerationPage igp = new ImageGenerationPage(fullUrlExtension, titleInput, textInput); //intializes the image generation page by providing the proper url extension, title, and text
             igp.Show(); //shows the image generation page
 
         }

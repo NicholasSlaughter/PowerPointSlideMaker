@@ -1,5 +1,7 @@
 ﻿using HtmlAgilityPack;
+using Syncfusion.Presentation;
 using System;
+using System.Collections;
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
@@ -9,6 +11,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading.Tasks;
 using System.Windows.Forms;
 
@@ -18,6 +21,8 @@ namespace SlideShowImageFinder
 {
     public partial class ImageGenerationPage : Form
     {
+        private string pptTitle { get; set; }
+        private string pptText { get; set; }
         private string searchUrl { get; set; }
         private int indexLimit { get; set; }
         private int index { get; set; }
@@ -27,9 +32,12 @@ namespace SlideShowImageFinder
         private int img3SaveIndex { get; set; }
 
 
-        public ImageGenerationPage(string search)
+        public ImageGenerationPage(string search, string title, string text)
         {
+            pptTitle = title;
+            pptText = text;
             searchUrl = search;
+
             //I am only allowing for 21 images to show up in the search
             //If I do more than this then the program will become slower
             //I did this because the user wants to get the images as fast as possible
@@ -457,6 +465,23 @@ namespace SlideShowImageFinder
             {
                 //Close Box  
             }
+        }
+
+        private void makePPTButton_Click(object sender, EventArgs e)
+        {
+            IPresentation pptxDoc = Presentation.Create(); //Creates new powerpoint
+
+            ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.TitleAndContent); //Creates new slide
+
+            //Add title content to the slide by accessing the title placeholder of the TitleOnly layout-slide
+            IShape titleShape = slide.Shapes[0] as IShape;
+            titleShape.TextBody.AddParagraph(pptTitle).HorizontalAlignment = HorizontalAlignmentType.Center;
+
+            //Adds content to the text box
+            IShape descriptionShape = slide.Shapes[1] as IShape;
+            descriptionShape.TextBody.AddParagraph(pptText);
+
+            pptxDoc.Save("Sample.pptx");
         }
     }
 }
