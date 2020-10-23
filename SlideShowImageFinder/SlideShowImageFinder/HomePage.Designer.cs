@@ -82,11 +82,11 @@
             this.appTitle.AutoSize = true;
             this.appTitle.Font = new System.Drawing.Font("Microsoft Sans Serif", 30F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
             this.appTitle.ImageAlign = System.Drawing.ContentAlignment.TopCenter;
-            this.appTitle.Location = new System.Drawing.Point(169, 9);
+            this.appTitle.Location = new System.Drawing.Point(186, 9);
             this.appTitle.Name = "appTitle";
-            this.appTitle.Size = new System.Drawing.Size(464, 46);
+            this.appTitle.Size = new System.Drawing.Size(447, 46);
             this.appTitle.TabIndex = 5;
-            this.appTitle.Text = "Slide Show Image Finder";
+            this.appTitle.Text = "PowerPoint Slide Maker";
             this.appTitle.TextAlign = System.Drawing.ContentAlignment.TopCenter;
             // 
             // richTextBoxText
@@ -133,7 +133,7 @@
             this.Controls.Add(this.textLabel);
             this.Controls.Add(this.titleLabel);
             this.Name = "textTextbox";
-            this.Text = "Slide Show Image Finder";
+            this.Text = "PowerPoint Slide Maker";
             this.Load += new System.EventHandler(this.Form1_Load);
             this.ResumeLayout(false);
             this.PerformLayout();
