@@ -25,6 +25,7 @@ namespace SlideShowImageFinder
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            boldOnLabel.Visible = false;
         }
 
         //This button takes in the title and the text of a users slide show
@@ -34,7 +35,8 @@ namespace SlideShowImageFinder
         private void generateButton_Click(object sender, EventArgs e)
         {
             string titleInput = titleTextBox.Text.ToString(); //Set the title to a string
-            string textInput;
+            string textInput = richTextBoxText.Text.ToString();
+            string boldTextInput;
             string boldFinder = "a";
             int counter = 0;
 
@@ -61,35 +63,48 @@ namespace SlideShowImageFinder
                 else //if the char is bold and the boldFinder string isn't empty then add the next bold character to the string
                 {
                     boldFinder += richTextBoxText.Text[i].ToString();
-                    if (richTextBoxText.Text[i + 1].ToString() == " ") //If the next character is a space then add a space to the boldFinder string and skip the next sequence
+                    
+                    //Make sure an out of bound exception is not thrown
+                    if (richTextBoxText.Text.Length != i+1)
                     {
-                        i++;
-                        boldFinder += " ";
-                    }
-                    else if(richTextBoxText.Text[i + 1].ToString() == "\n") //If the next character is a newline then add a space to the boldFinder string and skip the next sequence
-                    {
-                        i++;
-                        boldFinder += " ";
+                        if (richTextBoxText.Text[i + 1].ToString() == " ") //If the next character is a space then add a space to the boldFinder string and skip the next sequence
+                        {
+                            i++;
+                            boldFinder += " ";
+                        }
+                        else if (richTextBoxText.Text[i + 1].ToString() == "\n") //If the next character is a newline then add a space to the boldFinder string and skip the next sequence
+                        {
+                            i++;
+                            boldFinder += " ";
+                        }
                     }
                 }
             }
             
-            textInput = boldFinder;
-            string fullInput = titleInput + " " + textInput; //Sets the full input given from the user into a string
+            boldTextInput = boldFinder;
+            string fullInput = titleInput + " " + boldTextInput; //Sets the full input given from the user into a string
 
             //parce through the full input and find space. if there is a space the replace with %20
             //%20 is used becuase the website url reads spaces as %20 for the image search
             string search = Regex.Replace(fullInput, @"\s+", "%20");
             string fullUrlExtension = search; //sets the full url extension to a string
 
-            ImageGenerationPage igp = new ImageGenerationPage(fullUrlExtension); //intializes the image generation page by providing the proper url extension
+            ImageGenerationPage igp = new ImageGenerationPage(fullUrlExtension, titleInput, textInput); //intializes the image generation page by providing the proper url extension, title, and text
             igp.Show(); //shows the image generation page
 
         }
-
-        private void checkBox1_CheckedChanged(object sender, EventArgs e)
+        private void boldButton_Click(object sender, EventArgs e)
         {
-            richTextBoxText.SwtichToBoldRegular();
+            if (!boldOnLabel.Visible)
+            {
+                richTextBoxText.SwtichToBoldRegular();
+                boldOnLabel.Visible = true;
+            }
+            else
+            {
+                richTextBoxText.SwtichToBoldRegular();
+                boldOnLabel.Visible = false;
+            }
         }
     }
     static class Helper
