@@ -469,14 +469,49 @@ namespace SlideShowImageFinder
             }
         }
 
-        private void makePPTButton_Click(object sender, EventArgs e)
+        private void makeSlideButton_Click(object sender, EventArgs e)
         {
-            FileInfo fileCheck = new FileInfo(Directory.GetCurrentDirectory() + "\\Sample.pptx");
-            if (!IsFileLocked(fileCheck))
+            DialogResult result = MessageBox.Show("Would You Like To Create a PowerPoint?", "PowerPoint Creation", MessageBoxButtons.YesNo);
+            if (result == DialogResult.Yes)
+                CreatePPTX();
+            else
             {
-                IPresentation pptxDoc = Presentation.Create(); //Creates new powerpoint
+                result = MessageBox.Show("Would You Like To Add A Slide To An Existing PowerPoint?", "Edit PowerPoint", MessageBoxButtons.YesNo);
+                if(result == DialogResult.Yes)
+                    LoadPPTx();
+                else
+                {
+                    //close
+                }
+            }
+        }
 
-                ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.TitleAndContent); //Creates new slide
+        protected void LoadPPTx()
+        {
+            var filePath = string.Empty;
+
+            using (OpenFileDialog openFileDialog = new OpenFileDialog())
+            {
+                openFileDialog.InitialDirectory = "c:\\";
+                openFileDialog.Filter = "pptx files (*.pptx)|*.pptx";
+                openFileDialog.FilterIndex = 1;
+                openFileDialog.RestoreDirectory = true;
+
+                if (openFileDialog.ShowDialog() == DialogResult.OK)
+                {
+                    //Get the path of PowerPoint file
+                    filePath = openFileDialog.FileName;
+                }
+            }
+
+            FileInfo fileCheck = new FileInfo(filePath); //Gets the file path to the sample pptx that is getting saved
+            if (!IsFileLocked(fileCheck)) //If the file is not open then create and save PowerPoint else throw error message
+            {
+                //Opens an existing PowerPoint presentation.
+                IPresentation pptxDoc = Presentation.Open(filePath);
+
+                //Creates a slide at the end of the PowerPoint presentation
+                ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.TitleAndContent);
 
                 //Add title content to the slide by accessing the title placeholder of the TitleOnly layout-slide
                 IShape titleShape = slide.Shapes[0] as IShape;
@@ -486,6 +521,10 @@ namespace SlideShowImageFinder
                 IShape descriptionShape = slide.Shapes[1] as IShape;
                 descriptionShape.TextBody.AddParagraph(pptText);
 
+                //Saves the Presentation to the file system.
+                pptxDoc.Save("Output.pptx");
+
+                //Following algorithm gets all the images that were selected and puts them into the pptx
                 if (imageToPptIndex.Count != 0)
                 {
                     HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
@@ -525,29 +564,197 @@ namespace SlideShowImageFinder
                             MemoryStream stream = new MemoryStream(imageBytes);
 
                             //Adds the picture to a slide by specifying its size and position.
-                            slide.Shapes.AddPicture(stream, imageOffset + i * 10, 238.59, 364.54, 192.16);
+                            slide.Shapes.AddPicture(stream, imageOffset + i * 10, 238.59, 364.54, 192.16); //Offset each image so the user can see the different images on the pptx
                             stream.Close();
                         }
                     }
                 }
 
-                pptxDoc.Save("Sample.pptx");
-                pptxDoc.Close();
-
-                DialogResult result = MessageBox.Show("PowerPoint has been created! Would you like to open it?", "PowerPoint Created", MessageBoxButtons.YesNo);
-                if (result == DialogResult.Yes)
-                {
-                    string path = Directory.GetCurrentDirectory() + "\\Sample.pptx";
-                    Process proc = Process.Start(path);
-                }
-                else
-                {
-                    //close
-                }
+                pptxDoc.Save(filePath); //Saves the pptx
+                pptxDoc.Close();    //closes pptx stream
             }
             else
             {
                 MessageBox.Show("File is already open and can not be saved!\nPlease close The PowerPoint", "PowerPoint Open", MessageBoxButtons.OK);
+            }
+        }
+
+        protected void CreatePPTX()
+        {
+            var filePath = string.Empty;
+
+            MessageBox.Show("Please Select The Folder You Would Like The PowerPoint To Be In", "Folder Select", MessageBoxButtons.OK);
+
+            using (var fbd = new FolderBrowserDialog())
+            {
+                DialogResult fileResult = fbd.ShowDialog();
+
+                if (fileResult == DialogResult.OK && !string.IsNullOrWhiteSpace(fbd.SelectedPath))
+                {
+                    filePath = fbd.SelectedPath + "\\Sample.pptx";
+                }
+            }
+            if (filePath != "")
+            {
+                if (IsSampleFileMade(filePath)) //If the file is made and is not open then create and save PowerPoint else throw error message
+                {
+                    IPresentation pptxDoc = Presentation.Create(); //Creates new powerpoint
+
+                    ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.TitleAndContent); //Creates new slide
+
+                    //Add title content to the slide by accessing the title placeholder of the TitleOnly layout-slide
+                    IShape titleShape = slide.Shapes[0] as IShape;
+                    titleShape.TextBody.AddParagraph(pptTitle).HorizontalAlignment = HorizontalAlignmentType.Center;
+
+                    //Adds content to the text box
+                    IShape descriptionShape = slide.Shapes[1] as IShape;
+                    descriptionShape.TextBody.AddParagraph(pptText);
+
+                    //Following algorithm gets all the images that were selected and puts them into the pptx
+                    if (imageToPptIndex.Count != 0)
+                    {
+                        HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+
+                        document = new HtmlWeb().Load(requestUrl);
+
+                        var links = document.DocumentNode.Descendants("img")
+                                            .Select(a => a.GetAttributeValue("src", null))
+                                            .Where(s => !String.IsNullOrEmpty(s));
+
+                        var urls = links.ToList();
+
+                        urls.RemoveAt(0);
+                        double imageOffset = 499.79;
+
+                        using (WebClient webClient = new WebClient())
+                        {
+                            for (int i = 0; i < imageToPptIndex.Count; i++)
+                            {
+                                string imageUrl = urls[(int)imageToPptIndex[i]];
+
+                                byte[] imageBytes;
+                                HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create(imageUrl);
+                                WebResponse imageResponse = imageRequest.GetResponse();
+
+                                Stream responseStream = imageResponse.GetResponseStream();
+
+                                using (BinaryReader br = new BinaryReader(responseStream))
+                                {
+                                    imageBytes = br.ReadBytes(500000);
+                                    br.Close();
+                                }
+                                responseStream.Close();
+                                imageResponse.Close();
+
+                                //Gets a picture as stream.
+                                MemoryStream stream = new MemoryStream(imageBytes);
+
+                                //Adds the picture to a slide by specifying its size and position.
+                                slide.Shapes.AddPicture(stream, imageOffset + i * 10, 238.59, 364.54, 192.16); //Offset each image so the user can see the different images on the pptx
+                                stream.Close();
+                            }
+                        }
+                    }
+
+                    pptxDoc.Save(filePath); //Saves the pptx
+                    pptxDoc.Close();    //closes pptx stream
+
+                    //Dialog box opens, asking the user if they want to open the pptx that was created. If yes then the pptx opens if not then the box closes
+                    DialogResult result = MessageBox.Show("PowerPoint has been created! Would you like to open it?", "PowerPoint Created", MessageBoxButtons.YesNo);
+                    if (result == DialogResult.Yes)
+                    {
+                        Process proc = Process.Start(filePath); //Opens and runs the pptx
+                    }
+                    else
+                    {
+                        //close
+                    }
+                }
+                else
+                {
+                    if (File.Exists(filePath)) //If file is made and the file exists then the pptx must be open. Throw error message
+                    {
+                        MessageBox.Show("File is already open and can not be saved!\nPlease close The PowerPoint", "PowerPoint Open", MessageBoxButtons.OK);
+                    }
+                    else //File is not made yet
+                    {
+                        IPresentation pptxDoc = Presentation.Create(); //Creates new powerpoint
+
+                        ISlide slide = pptxDoc.Slides.Add(SlideLayoutType.TitleAndContent); //Creates new slide
+
+                        //Add title content to the slide by accessing the title placeholder of the TitleOnly layout-slide
+                        IShape titleShape = slide.Shapes[0] as IShape;
+                        titleShape.TextBody.AddParagraph(pptTitle).HorizontalAlignment = HorizontalAlignmentType.Center;
+
+                        //Adds content to the text box
+                        IShape descriptionShape = slide.Shapes[1] as IShape;
+                        descriptionShape.TextBody.AddParagraph(pptText);
+
+                        //Following algorithm gets all the images that were selected and puts them into the pptx
+                        if (imageToPptIndex.Count != 0)
+                        {
+                            HtmlAgilityPack.HtmlDocument document = new HtmlAgilityPack.HtmlDocument();
+
+                            document = new HtmlWeb().Load(requestUrl);
+
+                            var links = document.DocumentNode.Descendants("img")
+                                                .Select(a => a.GetAttributeValue("src", null))
+                                                .Where(s => !String.IsNullOrEmpty(s));
+
+                            var urls = links.ToList();
+
+                            urls.RemoveAt(0);
+                            double imageOffset = 499.79;
+
+                            using (WebClient webClient = new WebClient())
+                            {
+                                for (int i = 0; i < imageToPptIndex.Count; i++)
+                                {
+                                    string imageUrl = urls[(int)imageToPptIndex[i]];
+
+                                    byte[] imageBytes;
+                                    HttpWebRequest imageRequest = (HttpWebRequest)WebRequest.Create(imageUrl);
+                                    WebResponse imageResponse = imageRequest.GetResponse();
+
+                                    Stream responseStream = imageResponse.GetResponseStream();
+
+                                    using (BinaryReader br = new BinaryReader(responseStream))
+                                    {
+                                        imageBytes = br.ReadBytes(500000);
+                                        br.Close();
+                                    }
+                                    responseStream.Close();
+                                    imageResponse.Close();
+
+                                    //Gets a picture as stream.
+                                    MemoryStream stream = new MemoryStream(imageBytes);
+
+                                    //Adds the picture to a slide by specifying its size and position.
+                                    slide.Shapes.AddPicture(stream, imageOffset + i * 10, 238.59, 364.54, 192.16); //Offset each image so the user can see the different images on the pptx
+                                    stream.Close();
+                                }
+                            }
+                        }
+
+                        pptxDoc.Save(filePath); //Saves the pptx
+                        pptxDoc.Close();    //closes pptx stream
+
+                        //Dialog box opens, asking the user if they want to open the pptx that was created. If yes then the pptx opens if not then the box closes
+                        DialogResult result = MessageBox.Show("PowerPoint has been created! Would you like to open it?", "PowerPoint Created", MessageBoxButtons.YesNo);
+                        if (result == DialogResult.Yes)
+                        {
+                            Process proc = Process.Start(filePath); //Opens and runs the pptx
+                        }
+                        else
+                        {
+                            //close
+                        }
+                    }
+                }
+            }
+            else
+            {
+                //close
             }
         }
 
@@ -571,6 +778,25 @@ namespace SlideShowImageFinder
 
             //file is not locked
             return false;
+        }
+        protected virtual bool IsSampleFileMade(string file)
+        {
+            string path = file;
+            try
+            {
+                using (FileStream stream = File.Open(path, FileMode.Open))
+                {
+                    stream.Close();
+                }
+            }
+            catch (IOException)
+            {
+                //the has not been made
+                return false;
+            }
+
+            //file is made
+            return true;
         }
 
         private void pictureBox3_Click(object sender, EventArgs e)
