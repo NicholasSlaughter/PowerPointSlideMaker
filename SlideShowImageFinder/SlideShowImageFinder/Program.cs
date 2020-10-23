@@ -6,7 +6,7 @@ using System.Windows.Forms;
 
 //Name: Nicholas Slaughter
 //Date Created: 10/20/2020
-//Date Last Modified: 10/21/2020
+//Date Last Modified: 10/23/2020
 //Purpose: Interview Coding Test
 /*Description:
  * 
@@ -24,8 +24,9 @@ using System.Windows.Forms;
  * can double click on the image they like then will be prompted to save the image or not.
  * 
  * Once the user has gone through all of the images in the list they will be notified and no more images will appear. Once the user is done
- * finding images they can then either enter new search criteria in to find new images or close the application all together and put their
- * new saved images into their slideshow.
+ * finding images they can then make a slide in their slide PowerPoint. The user can either create a new PowerPoint or add a slide to an
+ * already existing one. Once the PowerPoint is made the application will display a pop up asking the user if they want to open the PowerPoint
+ * Where they just added the slide.
  */
 
 namespace SlideShowImageFinder
