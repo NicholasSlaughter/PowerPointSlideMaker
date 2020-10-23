@@ -572,6 +572,17 @@ namespace SlideShowImageFinder
 
                 pptxDoc.Save(filePath); //Saves the pptx
                 pptxDoc.Close();    //closes pptx stream
+
+                //Dialog box opens, asking the user if they want to open the pptx that was created. If yes then the pptx opens if not then the box closes
+                DialogResult result = MessageBox.Show("Slide has been added! Would you like to open the PowerPoint?", "Slide Added", MessageBoxButtons.YesNo);
+                if (result == DialogResult.Yes)
+                {
+                    Process proc = Process.Start(filePath); //Opens and runs the pptx
+                }
+                else
+                {
+                    //close
+                }
             }
             else
             {
@@ -846,6 +857,25 @@ namespace SlideShowImageFinder
             if (result == DialogResult.Yes)
             {
                 imageToPptIndex.Add(img1SaveIndex); //adds the image index in picture box 1 an array of images to copy to the PowerPoint
+            }
+            else
+            {
+                //close
+            }
+        }
+
+        private void clearPicturesButton_Click(object sender, EventArgs e)
+        {
+            //Message box initialization
+            string message = "Do you want to clear you selected images?";
+            string title = "Clear Images";
+            MessageBoxButtons buttons = MessageBoxButtons.YesNo;
+            DialogResult result = MessageBox.Show(message, title, buttons);
+
+            if (result == DialogResult.Yes)
+            {
+                imageToPptIndex.Clear();
+                MessageBox.Show("Your selected images have been cleared", "Cleared Images", MessageBoxButtons.OK);
             }
             else
             {
