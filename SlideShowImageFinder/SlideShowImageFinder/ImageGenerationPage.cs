@@ -813,5 +813,73 @@ namespace SlideShowImageFinder
                 //close
             }
         }
+
+        private void previousImagesButton_Click(object sender, EventArgs e)
+        {
+            //If the can't have less than index 0
+            if (index == 3)
+            {
+                MessageBox.Show("This is the beginning! There are no images before this.", "No More Images", MessageBoxButtons.OK);
+            }
+            else
+            {
+                var counter = 0;
+                string imageUrl;
+                byte[] imageBytes;
+                HttpWebRequest imageRequest;
+                WebResponse imageResponse;
+
+                //Here I am using the web client to get the image url and the put the url into a byte array
+                //where I then put the byte array into a stream which lets me set the image for each picture box
+                using (WebClient webClient = new WebClient())
+                {
+                    //I only need 3 images to display on the page at once so I get the next
+                    //3 images in the url list to display (Note I have to skip every second url)
+                    for (int i = index - 4; i > index - 7; i--)
+                    {
+                        imageUrl = imageList[i];
+
+                        imageRequest = (HttpWebRequest)WebRequest.Create(imageUrl);
+                        imageResponse = imageRequest.GetResponse();
+
+                        Stream responseStream = imageResponse.GetResponseStream();
+
+                        using (BinaryReader br = new BinaryReader(responseStream))
+                        {
+                            imageBytes = br.ReadBytes(500000);
+                            br.Close();
+                        }
+                        responseStream.Close();
+                        imageResponse.Close();
+
+                        using (MemoryStream stream = new MemoryStream(imageBytes))
+                        {
+                            //Set the image url to the picture boxes
+                            if (counter == 2)
+                            {
+                                pictureBox1.Image = Image.FromStream(stream);
+                                pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
+                                img1SaveIndex = index - 2; //Keeping track of image index if I need to download it from the list later
+                            }
+                            else if (counter == 1)
+                            {
+                                pictureBox2.Image = Image.FromStream(stream);
+                                pictureBox2.SizeMode = PictureBoxSizeMode.StretchImage;
+                                img2SaveIndex = index - 1;
+                            }
+                            else if (counter == 0)
+                            {
+                                pictureBox3.Image = Image.FromStream(stream);
+                                pictureBox3.SizeMode = PictureBoxSizeMode.StretchImage;
+                                img3SaveIndex = index;
+                            }
+                            //Using counter to know which picture box needs an image next
+                            counter++;
+                        }
+                    }
+                }
+                index -= 3;
+            }
+        }
     }
 }

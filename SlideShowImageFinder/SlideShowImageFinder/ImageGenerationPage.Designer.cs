@@ -34,6 +34,7 @@
             this.nextButton = new System.Windows.Forms.Button();
             this.makeSlideButton = new System.Windows.Forms.Button();
             this.clearPicturesButton = new System.Windows.Forms.Button();
+            this.previousImagesButton = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox3)).BeginInit();
@@ -94,7 +95,7 @@
             // clearPicturesButton
             // 
             this.clearPicturesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
-            this.clearPicturesButton.Location = new System.Drawing.Point(316, 370);
+            this.clearPicturesButton.Location = new System.Drawing.Point(211, 370);
             this.clearPicturesButton.Name = "clearPicturesButton";
             this.clearPicturesButton.Size = new System.Drawing.Size(160, 59);
             this.clearPicturesButton.TabIndex = 12;
@@ -102,11 +103,23 @@
             this.clearPicturesButton.UseVisualStyleBackColor = true;
             this.clearPicturesButton.Click += new System.EventHandler(this.clearPicturesButton_Click);
             // 
+            // previousImagesButton
+            // 
+            this.previousImagesButton.Font = new System.Drawing.Font("Microsoft Sans Serif", 14F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(0)));
+            this.previousImagesButton.Location = new System.Drawing.Point(431, 370);
+            this.previousImagesButton.Name = "previousImagesButton";
+            this.previousImagesButton.Size = new System.Drawing.Size(157, 59);
+            this.previousImagesButton.TabIndex = 13;
+            this.previousImagesButton.Text = "Previous Images";
+            this.previousImagesButton.UseVisualStyleBackColor = true;
+            this.previousImagesButton.Click += new System.EventHandler(this.previousImagesButton_Click);
+            // 
             // ImageGenerationPage
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.previousImagesButton);
             this.Controls.Add(this.clearPicturesButton);
             this.Controls.Add(this.makeSlideButton);
             this.Controls.Add(this.nextButton);
@@ -130,5 +143,6 @@
         private System.Windows.Forms.Button nextButton;
         private System.Windows.Forms.Button makeSlideButton;
         private System.Windows.Forms.Button clearPicturesButton;
+        private System.Windows.Forms.Button previousImagesButton;
     }
 }

@@ -34,63 +34,78 @@ namespace SlideShowImageFinder
         //Finally the event handler will then give this extension to the image generation page and then display the new page will images found using the search criteria
         private void generateButton_Click(object sender, EventArgs e)
         {
-            string titleInput = titleTextBox.Text.ToString(); //Set the title to a string
-            string textInput = richTextBoxText.Text.ToString();
-            string boldTextInput;
-            string boldFinder = "a";
-            int counter = 0;
-
-            //Used the code below to find which characters in the richTextBox were bold characters
-            int end = richTextBoxText.SelectionStart;
-            int start = richTextBoxText.SelectionLength;
-            for (int i = 1; i < end; i++) //looped through every character in the richTextBox
+            string check = titleTextBox.Text.ToString().Trim();
+            if (!titleTextBox.Text.ToString().Equals(""))
             {
-                richTextBoxText.SelectionStart = start + i;
-                richTextBoxText.SelectionLength = 1;
-                if (!richTextBoxText.SelectionFont.Bold) //If the char is not bold then move on
+                if (titleTextBox.Text.ToString().Trim() != "")
                 {
-                    richTextBoxText.SelectionStart = 0;
-                    richTextBoxText.SelectionLength = 0;
-                    richTextBoxText.SelectionStart = start;
-                    richTextBoxText.SelectionLength = end;
-                    richTextBoxText.Focus();
-                }
-                else if (counter == 0) //If the char is bold and the boldFinder string has nothing in it then set boldFinder to the first bold character
-                {
-                    boldFinder = richTextBoxText.Text[i].ToString();
-                    counter++;
-                }
-                else //if the char is bold and the boldFinder string isn't empty then add the next bold character to the string
-                {
-                    boldFinder += richTextBoxText.Text[i].ToString();
-                    
-                    //Make sure an out of bound exception is not thrown
-                    if (richTextBoxText.Text.Length != i+1)
+                    string titleInput = titleTextBox.Text.ToString(); //Set the title to a string
+                    string textInput = richTextBoxText.Text.ToString();
+                    string boldTextInput;
+                    string boldFinder = "a";
+                    int counter = 0;
+
+                    //Used the code below to find which characters in the richTextBox were bold characters
+                    int end = richTextBoxText.SelectionStart;
+                    int start = richTextBoxText.SelectionLength;
+                    for (int i = 1; i < end; i++) //looped through every character in the richTextBox
                     {
-                        if (richTextBoxText.Text[i + 1].ToString() == " ") //If the next character is a space then add a space to the boldFinder string and skip the next sequence
+                        richTextBoxText.SelectionStart = start + i;
+                        richTextBoxText.SelectionLength = 1;
+                        if (!richTextBoxText.SelectionFont.Bold) //If the char is not bold then move on
                         {
-                            i++;
-                            boldFinder += " ";
+                            richTextBoxText.SelectionStart = 0;
+                            richTextBoxText.SelectionLength = 0;
+                            richTextBoxText.SelectionStart = start;
+                            richTextBoxText.SelectionLength = end;
+                            richTextBoxText.Focus();
                         }
-                        else if (richTextBoxText.Text[i + 1].ToString() == "\n") //If the next character is a newline then add a space to the boldFinder string and skip the next sequence
+                        else if (counter == 0) //If the char is bold and the boldFinder string has nothing in it then set boldFinder to the first bold character
                         {
-                            i++;
-                            boldFinder += " ";
+                            boldFinder = richTextBoxText.Text[i].ToString();
+                            counter++;
+                        }
+                        else //if the char is bold and the boldFinder string isn't empty then add the next bold character to the string
+                        {
+                            boldFinder += richTextBoxText.Text[i].ToString();
+
+                            //Make sure an out of bound exception is not thrown
+                            if (richTextBoxText.Text.Length != i + 1)
+                            {
+                                if (richTextBoxText.Text[i + 1].ToString() == " ") //If the next character is a space then add a space to the boldFinder string and skip the next sequence
+                                {
+                                    i++;
+                                    boldFinder += " ";
+                                }
+                                else if (richTextBoxText.Text[i + 1].ToString() == "\n") //If the next character is a newline then add a space to the boldFinder string and skip the next sequence
+                                {
+                                    i++;
+                                    boldFinder += " ";
+                                }
+                            }
                         }
                     }
+
+                    boldTextInput = boldFinder;
+                    string fullInput = titleInput + " " + boldTextInput; //Sets the full input given from the user into a string
+
+                    //parce through the full input and find space. if there is a space the replace with %20
+                    //%20 is used becuase the website url reads spaces as %20 for the image search
+                    string search = Regex.Replace(fullInput, @"\s+", "%20");
+                    string fullUrlExtension = search; //sets the full url extension to a string
+
+                    ImageGenerationPage igp = new ImageGenerationPage(fullUrlExtension, titleInput, textInput); //intializes the image generation page by providing the proper url extension, title, and text
+                    igp.Show(); //shows the image generation page
+                }
+                else
+                {
+                    MessageBox.Show("Title Can Not Be Empty! Please Enter Something For The Title.", "Empty Title", MessageBoxButtons.OK);
                 }
             }
-            
-            boldTextInput = boldFinder;
-            string fullInput = titleInput + " " + boldTextInput; //Sets the full input given from the user into a string
-
-            //parce through the full input and find space. if there is a space the replace with %20
-            //%20 is used becuase the website url reads spaces as %20 for the image search
-            string search = Regex.Replace(fullInput, @"\s+", "%20");
-            string fullUrlExtension = search; //sets the full url extension to a string
-
-            ImageGenerationPage igp = new ImageGenerationPage(fullUrlExtension, titleInput, textInput); //intializes the image generation page by providing the proper url extension, title, and text
-            igp.Show(); //shows the image generation page
+            else
+            {
+                MessageBox.Show("Title Can Not Be Empty! Please Enter Something For The Title.", "Empty Title", MessageBoxButtons.OK);
+            }
 
         }
         private void boldButton_Click(object sender, EventArgs e)
